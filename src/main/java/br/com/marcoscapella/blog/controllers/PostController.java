@@ -30,4 +30,14 @@ public class PostController {
         return postService.createPost(post);
     }
 
+    @PutMapping
+    public Post updatePost(@RequestBody Post post) {
+        return postService.updatePost(post);
+    }
+
+    @DeleteMapping
+    public void deletePost(@RequestBody Post post) {
+        postService.deletePost(post);
+    }
+
 }
