@@ -3,7 +3,6 @@ package br.com.marcoscapella.blog.dtos;
 import java.util.Set;
 
 public class PostRequestDTO {
-
     private String title;
     private String content;
     private Boolean published;
