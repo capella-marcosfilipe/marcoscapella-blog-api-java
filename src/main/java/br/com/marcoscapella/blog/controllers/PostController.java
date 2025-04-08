@@ -1,10 +1,14 @@
 package br.com.marcoscapella.blog.controllers;
 
+import br.com.marcoscapella.blog.dtos.PostRequestDTO;
+import br.com.marcoscapella.blog.dtos.PostResponseDTO;
 import br.com.marcoscapella.blog.models.Post;
 import br.com.marcoscapella.blog.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,14 +24,18 @@ public class PostController {
     }
 
     @GetMapping("/{slug}")
-    public ResponseEntity<Optional<Post>> getPostBySlug(@PathVariable String slug) {
-        Optional<Post> post = postService.getPostBySlug(slug);
-        return ResponseEntity.ok(post);
+    public ResponseEntity<PostResponseDTO> getPostBySlug(@PathVariable String slug) {
+        Post post = postService.getPostBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
+
+        PostResponseDTO dto = postService.convertToResponseDTO(post);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping
-    public Post createPost(@RequestBody Post post) {
-        return postService.createPost(post);
+    public Post createPost(@RequestBody PostRequestDTO postDto) {
+        Post post = postService.createPost(postDto);
+        return postService.createPost(postDto);
     }
 
     @PutMapping
