@@ -10,6 +10,7 @@ import br.com.marcoscapella.blog.models.User;
 import br.com.marcoscapella.blog.repositories.PostRepo;
 import br.com.marcoscapella.blog.repositories.TagRepo;
 import br.com.marcoscapella.blog.repositories.UserRepo;
+import br.com.marcoscapella.blog.utils.SlugUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -67,9 +68,7 @@ public class PostService {
         }
 
         // Creating slug name
-        post.setSlug(
-                post.getTitle().toLowerCase().replaceAll(" ", "-")
-        );
+        post.setSlug(SlugUtil.toSlug(post.getTitle()));
 
         // Set createdAt and updatedAt
         LocalDateTime now = LocalDateTime.now();
@@ -108,6 +107,40 @@ public class PostService {
     public Post updatePost(Post post) {
         post.setUpdatedAt(LocalDateTime.now());
         return postRepo.save(post);
+    }
+
+    public Post updatePostPartially(Long id, PostRequestDTO updatedFields) {
+        Post existingPost = postRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
+
+        if (updatedFields.getTitle() != null) {
+            existingPost.setTitle(updatedFields.getTitle());
+            existingPost.setSlug(SlugUtil.toSlug(updatedFields.getTitle())); // se quiser atualizar o slug também
+        }
+
+        if (updatedFields.getContent() != null) {
+            existingPost.setContent(updatedFields.getContent());
+        }
+
+        if (updatedFields.getPublished() != null) {
+            existingPost.setPublished(updatedFields.getPublished());
+        }
+
+        if (updatedFields.getAuthor() != null) {
+            User author = userRepo.findById(updatedFields.getAuthor().getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found"));
+            existingPost.setAuthor(author);
+        }
+
+        if (updatedFields.getTags() != null) {
+            Set<Tag> tags = updatedFields.getTags().stream().map(dto ->
+                    tagRepo.findById(dto.getId())
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tag not found: " + dto.getId()))
+            ).collect(Collectors.toSet());
+            existingPost.setTags(tags);
+        }
+
+        return postRepo.save(existingPost);
     }
 
     public void deletePost(Long id) {

@@ -37,6 +37,16 @@ public class PostController {
         return postService.createPost(postDto);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<PostResponseDTO> updatePostPartially(
+            @PathVariable Long id,
+            @RequestBody PostRequestDTO updatedFields
+    ) {
+        Post updatedPost = postService.updatePostPartially(id, updatedFields);
+        PostResponseDTO responseDTO = postService.convertToResponseDTO(updatedPost);
+        return ResponseEntity.ok(responseDTO);
+    }
+
     @PutMapping
     public Post updatePost(@RequestBody Post post) {
         return postService.updatePost(post);
