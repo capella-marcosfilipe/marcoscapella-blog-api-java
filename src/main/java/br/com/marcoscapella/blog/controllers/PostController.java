@@ -19,8 +19,9 @@ public class PostController {
     @Autowired private PostService postService;
 
     @GetMapping
-    public List<Post> getAll() {
-        return postService.getAllPosts();
+    public List<PostResponseDTO> getAll() {
+        List<Post> posts = postService.getAllPosts();
+        return posts.stream().map(postService::convertToResponseDTO).toList();
     }
 
     @GetMapping("/{slug}")
@@ -33,8 +34,9 @@ public class PostController {
     }
 
     @PostMapping
-    public Post createPost(@RequestBody PostRequestDTO postDto) {
-        return postService.createPost(postDto);
+    public ResponseEntity<PostResponseDTO> createPost(@RequestBody PostRequestDTO postDto) {
+        PostResponseDTO responseDTO = postService.createPost(postDto);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")

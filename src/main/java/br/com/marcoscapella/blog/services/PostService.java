@@ -36,7 +36,7 @@ public class PostService {
         return postRepo.findBySlug(slug);
     }
 
-    public Post createPost(PostRequestDTO dto) {
+    public PostResponseDTO createPost(PostRequestDTO dto) {
         Post post = new Post();
 
         post.setTitle(dto.getTitle());
@@ -76,12 +76,13 @@ public class PostService {
         post.setUpdatedAt(now);
 
         // Finally save the post
-        return postRepo.save(post);
+        Post savedPost = postRepo.save(post);
+
+        return convertToResponseDTO(savedPost);
     }
 
     public PostResponseDTO convertToResponseDTO(Post post) {
         PostResponseDTO dto = new PostResponseDTO();
-
         dto.setId(post.getId());
         dto.setTitle(post.getTitle());
         dto.setSlug(post.getSlug());
@@ -89,8 +90,11 @@ public class PostService {
         dto.setPublished(post.getPublished());
 
         // Author
-        User author = post.getAuthor();
-        dto.setAuthor(new AuthorDTO(author.getId(), author.getUsername()));
+        AuthorDTO authorDTO = new AuthorDTO();
+        authorDTO.setId(post.getAuthor().getId());
+        authorDTO.setUsername(post.getAuthor().getUsername());
+        authorDTO.setEmail(post.getAuthor().getEmail());
+        dto.setAuthor(authorDTO);
 
         // Tags
         Set<TagDTO> tagDTOs = post.getTags().stream()
@@ -144,10 +148,20 @@ public class PostService {
     }
 
     public void deletePost(Long id) {
-        if (!postRepo.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found");
-        }
+        Post post = postRepo.findByIdWithTags(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
+
+        // Saving the tags to check if they're orphans after deleting
+        Set<Tag> tagsToCheck = post.getTags();
+
         postRepo.deleteById(id);
+
+        // Deleting orphan tags
+        for (Tag tag : tagsToCheck) {
+            if (tag.getPosts().isEmpty()) {
+                tagRepo.delete(tag);
+            }
+        }
+
     }
 
     public boolean existsById(Long id) {
