@@ -150,6 +150,13 @@ Make sure to update it for production.
 
 ---
 
+## ⚙️ JPA Notes
+- Some endpoints use `JOIN FETCH` queries to avoid `LazyInitializationException`.
+- Relationships like Post -> Tags are lazily loaded by default for performance.
+- `@Transactional` annotations may be used in service methods to control session scope.
+
+---
+
 ## 📦 Deployment on Render
 
 - Create a PostgreSQL instance
