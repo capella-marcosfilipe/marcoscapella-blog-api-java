@@ -3,6 +3,7 @@ package br.com.marcoscapella.blog.dtos;
 public class AuthorDTO {
     private Long id;
     private String username;
+    private String email;
 
     public AuthorDTO() {}
 
@@ -25,5 +26,13 @@ public class AuthorDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
