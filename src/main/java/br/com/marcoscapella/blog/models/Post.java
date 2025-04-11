@@ -2,6 +2,7 @@ package br.com.marcoscapella.blog.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -15,6 +16,24 @@ public class Post {
     private String slug;
     private String content;
     private Boolean published;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @ManyToOne
     @JoinColumn(name = "user_id")

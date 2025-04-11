@@ -13,6 +13,7 @@ import br.com.marcoscapella.blog.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -68,6 +69,11 @@ public class PostService {
                 post.getTitle().toLowerCase().replaceAll(" ", "-")
         );
 
+        // Set createdAt and updatedAt
+        LocalDateTime now = LocalDateTime.now();
+        post.setCreatedAt(now);
+        post.setUpdatedAt(now);
+
         // Finally save the post
         return postRepo.save(post);
     }
@@ -91,10 +97,14 @@ public class PostService {
                 .collect(Collectors.toSet());
         dto.setTags(tagDTOs);
 
+        dto.setCreatedAt(post.getCreatedAt().toString());
+        dto.setUpdatedAt(post.getUpdatedAt().toString());
+
         return dto;
     }
 
     public Post updatePost(Post post) {
+        post.setUpdatedAt(LocalDateTime.now());
         return postRepo.save(post);
     }
 

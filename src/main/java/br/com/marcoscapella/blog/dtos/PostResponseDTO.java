@@ -9,6 +9,8 @@ public class PostResponseDTO {
     private String slug;
     private String content;
     private Boolean published;
+    private String createdAt;
+    private String updatedAt;;
     private AuthorDTO author;
     private Set<TagDTO> tags;
 
@@ -50,6 +52,23 @@ public class PostResponseDTO {
 
     public void setPublished(Boolean published) {
         this.published = published;
+    }
+
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public AuthorDTO getAuthor() {
