@@ -31,13 +31,15 @@ This is the backend for a simple blog application, built with **Spring Boot**. I
 
 ### 📝 Posts
 
-| Method | Endpoint           | Description                          |
-|--------|--------------------|--------------------------------------|
-| GET    | `/posts`           | Get all posts                        |
-| GET    | `/posts/{slug}`    | Get a post by slug                   |
-| POST   | `/posts`           | Create a new post                    |
-| PUT    | `/posts`           | Update a post                        |
-| DELETE | `/posts`           | Delete a post (send full post object)|
+| Method | Endpoint             | Description                          |
+|--------|----------------------|--------------------------------------|
+| GET    | `/posts`             | Get all posts                        |
+| GET    | `/posts/{id}`        | Get a post by ID                     |
+| GET    | `/posts/slug/{slug}` | Get a post by slug                   |
+| POST   | `/posts`             | Create a new post                    |
+| PUT    | `/posts`             | Update a post                        |
+| PATCH  | `/posts/{id}`        | Update a post partially
+| DELETE | `/posts/{id}`        | Delete a post by ID                  |
 
 ---
 
@@ -54,15 +56,15 @@ This is the backend for a simple blog application, built with **Spring Boot**. I
 
 ### 👤 Users
 
-| Method | Endpoint                   | Description                          |
-|--------|----------------------------|--------------------------------------|
-| GET    | `/users`                   | Get all users                        |
-| GET    | `/users/{id}`              | Get user by ID                       |
-| GET    | `/users/email/{email}`     | Get user by email                    |
-| GET    | `/users/username/{username}` | Get user by username               |
-| POST   | `/users`                   | Create a new user                    |
-| PUT    | `/users/{id}`              | Update a user                        |
-| DELETE | `/users/{id}`              | Delete a user                        |
+| Method | Endpoint                     | Description                          |
+|--------|------------------------------|--------------------------------------|
+| GET    | `/users`                     | Get all users                        |
+| GET    | `/users/{id}`                | Get user by ID                       |
+| GET    | `/users/email/{email}`       | Get user by email                    |
+| GET    | `/users/username/{username}` | Get user by username                 |
+| POST   | `/users`                     | Create a new user                    |
+| PUT    | `/users/{id}`                | Update a user                        |
+| DELETE | `/users/{id}`                | Delete a user                        |
 
 ---
 
@@ -74,7 +76,9 @@ This is the backend for a simple blog application, built with **Spring Boot**. I
 
 ---
 
-Request/Response format uses DTOs for better control.
+## 📤 Request/Response Format
+
+Request/Response format uses DTOs for better control and separation of concerns.
 
 ### Sample JSON (POST `/api/posts`)
 
@@ -85,10 +89,11 @@ Request/Response format uses DTOs for better control.
   "published": true,
   "author": { "id": 1 },
   "tags": [
-    { "name": "Career" },
-    { "name": "Personal" }
+    { "id": 1 },
+    { "id": 2 }
   ]
 }
+
 ```
 
 ---
