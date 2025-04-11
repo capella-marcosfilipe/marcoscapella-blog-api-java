@@ -11,7 +11,9 @@ import br.com.marcoscapella.blog.repositories.PostRepo;
 import br.com.marcoscapella.blog.repositories.TagRepo;
 import br.com.marcoscapella.blog.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -108,7 +110,14 @@ public class PostService {
         return postRepo.save(post);
     }
 
-    public void deletePost(Post post) {
-        postRepo.delete(post);
+    public void deletePost(Long id) {
+        if (!postRepo.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found");
+        }
+        postRepo.deleteById(id);
+    }
+
+    public boolean existsById(Long id) {
+        return postRepo.existsById(id);
     }
 }

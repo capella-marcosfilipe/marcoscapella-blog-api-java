@@ -34,7 +34,6 @@ public class PostController {
 
     @PostMapping
     public Post createPost(@RequestBody PostRequestDTO postDto) {
-        Post post = postService.createPost(postDto);
         return postService.createPost(postDto);
     }
 
@@ -43,9 +42,14 @@ public class PostController {
         return postService.updatePost(post);
     }
 
-    @DeleteMapping
-    public void deletePost(@RequestBody Post post) {
-        postService.deletePost(post);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable Long id) {
+        if (!postService.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found");
+        }
+
+        postService.deletePost(id);
+        return ResponseEntity.ok("Post deleted successfully");
     }
 
 }
